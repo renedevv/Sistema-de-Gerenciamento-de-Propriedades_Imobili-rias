@@ -1,0 +1,113 @@
+-- 1. Criação do Banco de Dados
+CREATE DATABASE GerenciamentoImobiliarias;
+USE GerenciamentoImobiliarias;
+
+-- 2. Criação das Tabelas
+
+-- Tabela Propriedades
+CREATE TABLE Propriedades (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    endereco VARCHAR(255) NOT NULL,
+    tipo ENUM('casa', 'apartamento', 'terreno') NOT NULL,
+    valor DECIMAL(10, 2) NOT NULL,
+    status ENUM('disponível', 'vendido', 'alugado') NOT NULL
+);
+
+-- Tabela Clientes
+CREATE TABLE Clientes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(100) NOT NULL,
+    telefone VARCHAR(15),
+    email VARCHAR(100),
+    tipo_interesse ENUM('compra', 'aluguel') NOT NULL
+);
+
+-- Tabela Agentes
+CREATE TABLE Agentes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(100) NOT NULL,
+    telefone VARCHAR(15),
+    email VARCHAR(100)
+);
+
+-- Tabela Transações
+CREATE TABLE Transacoes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    cliente_id INT,
+    agente_id INT,
+    propriedade_id INT,
+    data DATE NOT NULL,
+    tipo_transacao ENUM('compra', 'aluguel') NOT NULL,
+    FOREIGN KEY (cliente_id) REFERENCES Clientes(id),
+    FOREIGN KEY (agente_id) REFERENCES Agentes(id),
+    FOREIGN KEY (propriedade_id) REFERENCES Propriedades(id)
+);
+
+-- 3. Inserção de Dados
+-- Propriedades
+INSERT INTO Propriedades (endereco, tipo, valor, status) VALUES
+    ('Rua A, 123', 'casa', 300000.00, 'disponível'),
+    ('Avenida B, 456', 'apartamento', 250000.00, 'disponível'),
+    ('Rua C, 789', 'terreno', 150000.00, 'disponível');
+
+-- Clientes
+INSERT INTO Clientes (nome, telefone, email, tipo_interesse) VALUES
+    ('João Silva', '123456789', 'joao@email.com', 'compra'),
+    ('Maria Souza', '987654321', 'maria@email.com', 'aluguel');
+
+-- Agentes
+INSERT INTO Agentes (nome, telefone, email) VALUES
+    ('Carlos Almeida', '123123123', 'carlos@email.com'),
+    ('Fernanda Costa', '321321321', 'fernanda@email.com');
+
+-- Transações
+INSERT INTO Transacoes (cliente_id, agente_id, propriedade_id, data, tipo_transacao) VALUES
+    (1, 1, 1, '2024-09-30', 'compra'),
+    (2, 2, 2, '2024-09-29', 'aluguel');
+
+-- 4. Consultas com SELECT
+-- Listar todas as propriedades disponíveis
+SELECT * FROM Propriedades WHERE status = 'disponível';
+
+-- Listar todas as transações de compra
+SELECT * FROM Transacoes WHERE tipo_transacao = 'compra';
+
+-- Consultar detalhes completos de uma transação
+SELECT 
+    c.nome AS nome_cliente,
+    a.nome AS nome_agente,
+    p.endereco AS endereco_propriedade,
+    t.data AS data_transacao,
+    t.tipo_transacao
+FROM Transacoes t
+JOIN Clientes c ON t.cliente_id = c.id
+JOIN Agentes a ON t.agente_id = a.id
+JOIN Propriedades p ON t.propriedade_id = p.id;
+
+-- 5. Atualização de Dados
+-- Alterar o status de uma propriedade para "Vendido"
+UPDATE Propriedades SET status = 'vendido' WHERE id = 1;
+
+-- Atualizar o número de telefone de um cliente
+UPDATE Clientes SET telefone = '111222333' WHERE id = 1;
+
+-- 6. Exclusão de Dados
+-- Remover um cliente que não está mais interessado
+DELETE FROM Clientes WHERE id = 2;
+
+-- Excluir uma propriedade que foi removida da lista de disponíveis
+DELETE FROM Propriedades WHERE id = 3;
+
+-- 7. Uso de JOIN para Relacionar Tabelas
+-- Lista de transações com detalhes dos clientes, agentes e propriedades
+SELECT 
+    t.id AS transacao_id,
+    c.nome AS nome_cliente,
+    a.nome AS nome_agente,
+    p.endereco AS endereco_propriedade,
+    t.data AS data_transacao,
+    t.tipo_transacao
+FROM Transacoes t
+JOIN Clientes c ON t.cliente_id = c.id
+JOIN Agentes a ON t.agente_id = a.id
+JOIN Propriedades p ON t.propriedade_id = p.id;
