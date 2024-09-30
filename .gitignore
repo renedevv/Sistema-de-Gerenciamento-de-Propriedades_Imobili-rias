@@ -1,0 +1,29 @@
+# Ignorar arquivos de log
+*.log
+
+# Ignorar arquivos temporários
+*.tmp
+*.temp
+
+# Ignorar diretórios de build
+/build
+/bin
+
+# Ignorar arquivos de backup
+*~
+
+# Ignorar arquivos do banco de dados
+*.db
+*.sqlite
+
+# Ignorar diretórios de dependências
+/node_modules
+/vendor
+
+# Ignorar arquivos de configuração do IDE
+.idea/
+.vscode/
+.DS_Store
+
+# Ignorar arquivos de exportação de bancos de dados
+*.sql
